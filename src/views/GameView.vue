@@ -2,7 +2,7 @@
 import { useBankStore } from '@/stores/bank'
 import { ref } from 'vue'
 import { rollDice } from '@/utils'
-
+import AnimateInteger from '@/components/AnimateInteger.vue';
 const bankStore = useBankStore()
 const name = ref<string>('')
 function handleAddPlayer() {
@@ -48,7 +48,7 @@ function handlePlayerBanked(index: number) {
     <v-row>
       <v-col cols="12" class="bankInfo">
         <v-icon icon="mdi-bank" size="large"></v-icon>
-        <div>Bank Amount {{ bankStore.bank }}</div>
+        <div>Bank Amount <AnimateInteger :value=bankStore.bank :speed=5 /></div>
       </v-col>
     </v-row>
     <v-list>
