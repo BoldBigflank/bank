@@ -47,6 +47,17 @@ export const useBankStore = defineStore('bank', {
     }
   },
   actions: {
+    newGame() {
+      this.players = []
+      this.state = 'setup'
+      this.turn = 0
+      this.roll = ''
+      this.rollCount = 0
+      this.bank = 0
+      this.round = 0
+      this.maxRounds = 10
+      this.history = []
+    },
     addPlayer(name: string) {
       this.players.push({
         name,
@@ -100,5 +111,6 @@ export const useBankStore = defineStore('bank', {
         action
       })
     }
-  }
+  },
+  persist: true
 })

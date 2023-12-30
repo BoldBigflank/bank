@@ -32,5 +32,3 @@ npm run lint
  - Implement websockets so many players can be a part of the same game
  - Winner screen
  - Use Dice images, and animate rolling
-- localstorage
-- host on gh pages

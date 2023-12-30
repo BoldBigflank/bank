@@ -15,6 +15,9 @@ function handleStartGame() {
   if (bankStore.players.length === 0) return
   bankStore.startGame()
 }
+function handleNewGame() {
+  bankStore.newGame()
+}
 
 function handleRoll() {
   const diceA = rollDice()
@@ -47,6 +50,12 @@ function handlePlayerBanked(index: number) {
 <template>
   <v-container class="game">
     <v-row>
+      <v-col cols="12">
+        <v-btn 
+            v-if="bankStore.state !== 'setup'"
+            @click="handleNewGame"
+            >New Game</v-btn>
+      </v-col>
       <v-col cols="12">
         <div class="bankInfo">
           <img src="@/assets/bank-circle.svg" class="bankInfoIcon" />
