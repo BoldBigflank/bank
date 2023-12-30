@@ -3,6 +3,7 @@ import { useBankStore } from '@/stores/bank'
 import { ref } from 'vue'
 import { rollDice } from '@/utils'
 import AnimateInteger from '@/components/AnimateInteger.vue';
+import * as bankCircleSvg from '@/assets/bank-circle.svg'
 const bankStore = useBankStore()
 const name = ref<string>('')
 function handleAddPlayer() {
@@ -46,9 +47,13 @@ function handlePlayerBanked(index: number) {
 <template>
   <v-container class="game">
     <v-row>
-      <v-col cols="12" class="bankInfo">
-        <v-icon icon="mdi-bank" size="large"></v-icon>
-        <div>Bank Amount <AnimateInteger :value=bankStore.bank :speed=5 /></div>
+      <v-col cols="12">
+        <div class="bankInfo">
+          <img src="@/assets/bank-circle.svg" class="bankInfoIcon" />
+          <div class="bankInfoAmount">
+            <AnimateInteger :value=bankStore.bank :speed=5 />
+          </div>
+        </div>
       </v-col>
     </v-row>
     <v-list>
@@ -102,12 +107,31 @@ function handlePlayerBanked(index: number) {
 <style>
 .bankInfo {
   text-align: center;
+  position:relative;
+  height: 92px;
+  margin: 15px;
 }
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-  }
+.bankInfoIcon {
+  background-color: #333333;
+  position:absolute;
+  top: 0%;
+  left: 50%;
+  width: 92px;
+  height: 92px;
+  border-radius: 500px;
+  transform: translateX(-50%);
+}
+.bankInfoAmount {
+  font-family: monospace;
+  color: white;
+  font-size: 48px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+}
+.game {
+  max-width: 720px;
 }
 </style>
