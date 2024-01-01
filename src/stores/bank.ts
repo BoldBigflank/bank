@@ -14,11 +14,12 @@ type BankStateType = {
   players: Player[]
   state: State
   turn: number
-  roll: string
+  roll: number[]
   rollCount: number
   bank: number
   round: number,
   maxRounds: number,
+  useRealDice: boolean,
   history: History[]
 }
 export const useBankStore = defineStore('bank', {
@@ -26,11 +27,12 @@ export const useBankStore = defineStore('bank', {
     players: [],
     state: 'setup',
     turn: 0,
-    roll: '',
+    roll: [],
     rollCount: 0,
     bank: 0,
     round: 0,
     maxRounds: 10,
+    useRealDice: false,
     history: []
   } as BankStateType),
   getters: {
@@ -39,11 +41,22 @@ export const useBankStore = defineStore('bank', {
       if (!p) return {name: ''}
       return p
     },
+    rankedPlayers(state) {
+      return state.players.sort((a, b) => a.score < b.score ? 1 : -1)
+    },
+    lastHistory(state) {
+      if (state.history.length === 0) return ""
+      const {name, action} = state.history[state.history.length - 1]
+      return `${name} ${action}`
+    },
     allPlayersBanked(state) {
       return state.players.every(p => p.banked)
     },
     canBank(state) {
       return state.rollCount > 2 && state.state === 'progress'
+    },
+    isPastRollThree(state) {
+      return state.rollCount > 2
     }
   },
   actions: {
@@ -51,7 +64,7 @@ export const useBankStore = defineStore('bank', {
       this.players = []
       this.state = 'setup'
       this.turn = 0
-      this.roll = ''
+      this.roll = []
       this.rollCount = 0
       this.bank = 0
       this.round = 0
@@ -77,15 +90,16 @@ export const useBankStore = defineStore('bank', {
       while (this.players[this.turn].banked) {
         this.turn = (this.turn + 1) % this.players.length
       }
-      this.rollCount += 1
     },
     addBank(amount: number) {
       this.bank += amount
       this.addHistory(`added ${amount} to the bank`)
+      this.rollCount += 1
     },
     doubleBank() {
       this.bank *= 2
       this.addHistory(`doubled the bank`)
+      this.rollCount += 1
     },
     playerBanked(index: number) {
       this.players[index].score += this.bank
