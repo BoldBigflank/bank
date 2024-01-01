@@ -1,1 +1,0 @@
-import{_ as t,o,c as s,a as e,b as a}from"./index-5lHLWIt0.js";const c={},n={class:"about"},_=e("h1",null,"Created by Alex Swan",-1),r=e("p",null,[a(" View the source on "),e("a",{href:"https://github.com/BoldBigflank/bank/",target:"_blank"},"GitHub")],-1),i=[_,r];function l(d,h){return o(),s("div",n,i)}const b=t(c,[["render",l]]);export{b as default};
