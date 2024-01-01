@@ -5,10 +5,6 @@ type Player = {
   score: number
   banked: boolean
 }
-type History = {
-  name: string
-  action: string
-}
 type State = 'setup' | 'progress' | 'end'
 type BankStateType = {
   players: Player[]
@@ -20,7 +16,7 @@ type BankStateType = {
   round: number,
   maxRounds: number,
   useRealDice: boolean,
-  history: History[]
+  history: string[]
 }
 export const useBankStore = defineStore('bank', {
   state: () => ({
@@ -52,9 +48,8 @@ export const useBankStore = defineStore('bank', {
       .join(' and ')
     },
     lastHistory(state) {
-      if (state.history.length === 0) return ""
-      const {name, action} = state.history[state.history.length - 1]
-      return `${name} ${action}`
+      if (state.history.length === 0) return "start"
+      return state.history[state.history.length - 1]
     },
     allPlayersBanked(state) {
       return state.players.every(p => p.banked)
@@ -101,6 +96,7 @@ export const useBankStore = defineStore('bank', {
     },
     nextPlayerTurn() {
       if (this.allPlayersBanked) {
+        this.history.push(`all players banked`)
         this.endRound()
         return
       }
@@ -111,24 +107,27 @@ export const useBankStore = defineStore('bank', {
     },
     addBank(amount: number) {
       this.bank += amount
-      this.addHistory(`added ${amount} to the bank`)
+      this.history.push(`${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
       this.rollCount += 1
     },
     doubleBank() {
       this.bank *= 2
-      this.addHistory(`doubled the bank`)
+      this.history.push(`${this.currentPlayer.name} doubled the bank to ${this.bank}`)
       this.rollCount += 1
     },
     playerBanked(name: string) {
-      this.players = this.players.map((p) => ({
-        ...p,
-        banked: p.banked || p.name === name,
-        score: (p.name === name) ? p.score + this.bank : p.score
-      }))
-      this.addHistory(`${name} banked`)
+      const p = this.players.find((p) => p.name === name)
+      if (!p) return
+      p.banked = true
+      p.score += this.bank
+      this.history.push(`${name} banked ${this.bank} for a total of ${p.score}`)
       if (name === this.currentPlayer.name) {
         this.nextPlayerTurn()
       }
+    },
+    rolledSeven() {
+      this.history.push(`${this.currentPlayer.name} rolled a 7 at bank amount ${this.bank}`)
+      this.endRound()
     },
     endRound() {
       this.players = this.players.map((p) => ({
@@ -141,13 +140,6 @@ export const useBankStore = defineStore('bank', {
       if (this.round === this.maxRounds) {
         this.state = 'end'
       }
-      this.addHistory(`ended the round`)
-    },
-    addHistory(action: string) {
-      this.history.push({
-        name: this.currentPlayer.name,
-        action
-      })
     }
   },
   persist: true

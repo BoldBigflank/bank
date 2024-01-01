@@ -25,7 +25,7 @@ function handleRoll(diceA:number, diceB:number|undefined) {
   const doubles = diceB ? diceA === diceB : diceA === -1
   if (bankStore.rollCount > 2) {
     if (total === 7) {
-      bankStore.endRound()
+      bankStore.rolledSeven()
     } else if (doubles)  {
       bankStore.doubleBank()
     } else {
@@ -104,8 +104,8 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             </div>
           </div>
         </v-col>
-        <v-col v-if="bankStore.lastHistory">
-          <v-card >
+        <v-col>
+          <v-card>
             <v-card-text role="alert">
               {{ bankStore.lastHistory }}
             </v-card-text>
