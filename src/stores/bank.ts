@@ -42,10 +42,10 @@ export const useBankStore = defineStore('bank', {
       return p
     },
     rankedPlayers(state) {
-      return state.players.sort((a, b) => a.score < b.score ? 1 : -1)
+      return [...state.players].sort((a, b) => a.score < b.score ? 1 : -1)
     },
     winner(state) {
-      const rankedPlayers = state.players.sort((a, b) => a.score < b.score ? 1 : -1)
+      const rankedPlayers = [...state.players].sort((a, b) => a.score < b.score ? 1 : -1)
       return rankedPlayers
       .filter((p) => p.score === rankedPlayers[0].score)
       .map((p) => p.name)
@@ -68,8 +68,18 @@ export const useBankStore = defineStore('bank', {
   },
   actions: {
     newGame() {
-      this.players = []
-      this.state = 'setup'
+      if (this.state === 'end') {
+        // Same Players game
+        this.players = this.players.map((p) => ({
+          ...p,
+          banked: false,
+          score: 0
+        }))
+        this.state = 'progress'
+      } else {
+        this.players = []
+        this.state = 'setup'
+      }
       this.turn = 0
       this.roll = []
       this.rollCount = 0
@@ -89,10 +99,11 @@ export const useBankStore = defineStore('bank', {
       this.state = 'progress'
       this.round = 0
     },
-    bankPlayer(index: number) {
-      this.players[index].banked = true
-    },
     nextPlayerTurn() {
+      if (this.allPlayersBanked) {
+        this.endRound()
+        return
+      }
       this.turn = (this.turn + 1) % this.players.length
       while (this.players[this.turn].banked) {
         this.turn = (this.turn + 1) % this.players.length
@@ -108,10 +119,16 @@ export const useBankStore = defineStore('bank', {
       this.addHistory(`doubled the bank`)
       this.rollCount += 1
     },
-    playerBanked(index: number) {
-      this.players[index].score += this.bank
-      this.players[index].banked = true
-      this.addHistory(`${this.players[index].name} banked`)
+    playerBanked(name: string) {
+      this.players = this.players.map((p) => ({
+        ...p,
+        banked: p.banked || p.name === name,
+        score: (p.name === name) ? p.score + this.bank : p.score
+      }))
+      this.addHistory(`${name} banked`)
+      if (name === this.currentPlayer.name) {
+        this.nextPlayerTurn()
+      }
     },
     endRound() {
       this.players = this.players.map((p) => ({

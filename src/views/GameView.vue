@@ -3,6 +3,7 @@ import { useBankStore } from '@/stores/bank'
 import { ref } from 'vue'
 import { rollDice } from '@/utils'
 import AnimateInteger from '@/components/AnimateInteger.vue';
+import { computed } from 'vue';
 const bankStore = useBankStore()
 const name = ref<string>('')
 function handleAddPlayer() {
@@ -51,15 +52,24 @@ function handleManualRoll(amount: number) {
   handleRoll(amount, undefined)
 }
 
-function handlePlayerBanked(index: number) {
-  bankStore.playerBanked(index)
-  if (bankStore.allPlayersBanked) bankStore.endRound()
+function handlePlayerBanked(name: string) {
+  bankStore.playerBanked(name)
 }
 
 function toggleUseRealDice() {
   bankStore.useRealDice = !bankStore.useRealDice
   bankStore.roll = []
 }
+
+const playerColor = computed(() => {
+  return bankStore.players.map((p) => {
+    if (bankStore.state === 'end') return ''
+    else if (p.banked) return 'primary'
+    else if (p.name === bankStore.currentPlayer.name) return 'yellow'
+    else return ''
+  })
+})
+const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.rankedPlayers : bankStore.players)
 </script>
 
 <template>
@@ -70,7 +80,7 @@ function toggleUseRealDice() {
           <v-btn 
             v-if="bankStore.state !== 'setup'"
             @click="handleNewGame"
-            >New Game</v-btn>
+            >{{bankStore.state === 'end' ? 'Play Again' : 'New Game'}}</v-btn>
           <v-btn 
             v-if="bankStore.state === 'setup'"
             :disabled="bankStore.players.length === 0"
@@ -219,9 +229,9 @@ function toggleUseRealDice() {
             </v-list-item>
             <v-list-subheader>Players</v-list-subheader>
             <v-list-item 
-            v-for="(player, index) in bankStore.rankedPlayers" 
+            v-for="(player, index) in displayPlayers" 
             :key="player.name">
-            <v-card :color="player.banked ? 'primary' : ''">
+            <v-card :color="playerColor[index]">
               <v-container>
                 <v-row>
                   <v-col>
@@ -237,7 +247,7 @@ function toggleUseRealDice() {
                     v-if="bankStore.canBank"
                     :disabled="player.banked"
                     :aria-label="`${player.name} bank`"
-                    @click="() => handlePlayerBanked(index)"
+                    @click="() => handlePlayerBanked(player.name)"
                     >Bank</v-btn>
                   </v-col>
                 </v-row>

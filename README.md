@@ -31,3 +31,4 @@ npm run lint
  - Keyboard controls
  - Implement websockets so many players can be a part of the same game
  - Animate rolling dice
+ - Integrate with Twitch.tv so streamers can link and their audience can play along
