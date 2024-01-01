@@ -28,7 +28,6 @@ npm run lint
 
 
 # TODO
- - Winner screen
  - Keyboard controls
  - Implement websockets so many players can be a part of the same game
  - Animate rolling dice

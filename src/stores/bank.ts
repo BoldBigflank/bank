@@ -44,6 +44,13 @@ export const useBankStore = defineStore('bank', {
     rankedPlayers(state) {
       return state.players.sort((a, b) => a.score < b.score ? 1 : -1)
     },
+    winner(state) {
+      const rankedPlayers = state.players.sort((a, b) => a.score < b.score ? 1 : -1)
+      return rankedPlayers
+      .filter((p) => p.score === rankedPlayers[0].score)
+      .map((p) => p.name)
+      .join(' and ')
+    },
     lastHistory(state) {
       if (state.history.length === 0) return ""
       const {name, action} = state.history[state.history.length - 1]

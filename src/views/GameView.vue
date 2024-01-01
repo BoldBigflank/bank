@@ -84,7 +84,7 @@ function toggleUseRealDice() {
         label="Use real dice"></v-switch>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="bankStore.state === 'progress'">
       <v-col cols="12">
         <div class="bankInfo">
           <img src="@/assets/bank-circle.svg" class="bankInfoIcon" />
@@ -197,13 +197,18 @@ function toggleUseRealDice() {
             </v-row>
           </v-container>
         </v-col>
+        <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end">
+          <v-icon icon="mdi-trophy" size="x-large" /><br />
+          WINNER <br />
+          {{ bankStore.winner }}
+        </v-col>
         <v-col cols="12" v-else>ELSE {{ bankStore.state }}</v-col>
     </v-row>
     <v-row>
       <v-col>
         <v-list>
-          <v-list-item>
-            Round {{ bankStore.round }}/{{ bankStore.maxRounds }} (Roll {{ bankStore.rollCount + 1 }})
+          <v-list-item v-if="bankStore.state === 'progress'">
+            Round {{ bankStore.round + 1 }}/{{ bankStore.maxRounds }} (Roll {{ bankStore.rollCount + 1 }})
           </v-list-item>
           <v-list-subheader>Players</v-list-subheader>
           <v-list-item 
@@ -257,7 +262,7 @@ function toggleUseRealDice() {
 .bankInfoAmount {
   font-family: monospace;
   color: white;
-  font-size: 48px;
+  font-size: 4em;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -266,5 +271,9 @@ function toggleUseRealDice() {
 }
 .game {
   max-width: 720px;
+}
+.end {
+  text-align: center;
+  font-size: 2em;
 }
 </style>
