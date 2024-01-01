@@ -127,6 +127,7 @@ function toggleUseRealDice() {
                 <v-col v-if="bankStore.useRealDice" cols="12">
                   <v-container>
                    <v-row>
+                    <v-spacer></v-spacer>
                       <v-col>
                         <v-btn 
                         :disabled="bankStore.isPastRollThree"
@@ -141,8 +142,10 @@ function toggleUseRealDice() {
                       <v-col>
                         <v-btn @click="() => handleManualRoll(5)">5</v-btn>
                       </v-col>
+                      <v-spacer></v-spacer>
                     </v-row>
                     <v-row>
+                      <v-spacer></v-spacer>
                       <v-col>
                         <v-btn @click="() => handleManualRoll(6)">6</v-btn>
                       </v-col>
@@ -158,8 +161,10 @@ function toggleUseRealDice() {
                       <v-col>
                         <v-btn @click="() => handleManualRoll(9)">9</v-btn>
                       </v-col>
-                    </v-row>
+                      <v-spacer></v-spacer>
+                      </v-row>
                     <v-row>
+                      <v-spacer></v-spacer>
                       <v-col>
                         <v-btn @click="() => handleManualRoll(10)">10</v-btn>
                       </v-col>
@@ -177,16 +182,17 @@ function toggleUseRealDice() {
                         :disabled="!bankStore.isPastRollThree"
                         @click="() => handleManualRoll(-1)">Doubles</v-btn>
                       </v-col>
+                      <v-spacer></v-spacer>
                     </v-row>
                   </v-container>
                 </v-col>
-                <v-col v-if="!bankStore.useRealDice">
+                <v-col v-if="!bankStore.useRealDice" cols="auto">
                   <v-btn 
                   prepend-icon="mdi-dice-multiple"
                   :aria-label="`${bankStore.currentPlayer.name} Roll`"
                   v-on:click="handleRollClick">Roll</v-btn>
                 </v-col>
-                <v-col>
+                <v-col cols="auto">
                   <v-icon 
                   v-for="number in bankStore.roll"
                   v-bind:key="number"
@@ -215,26 +221,29 @@ function toggleUseRealDice() {
             <v-list-item 
             v-for="(player, index) in bankStore.rankedPlayers" 
             :key="player.name">
-            <v-container>
-              <v-row>
-                <v-col>
-                  {{ player.name }}
-                </v-col>
-                <v-col>
-                  <AnimateInteger :value="player.score" :speed=10 />
-                </v-col>
-                <v-col>
-                  <v-btn 
-                  density="compact"
-                  prepend-icon="mdi-bank"
-                  v-if="bankStore.canBank"
-                  :disabled="player.banked"
-                  :aria-label="`${player.name} bank`"
-                  @click="() => handlePlayerBanked(index)"
-                  >Bank</v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
+            <v-card :color="player.banked ? 'primary' : ''">
+              <v-container>
+                <v-row>
+                  <v-col>
+                    {{ player.name }}
+                  </v-col>
+                  <v-col cols="auto">
+                    <AnimateInteger :value="player.score" :speed=10 />
+                  </v-col>
+                  <v-col cols="auto">
+                    <v-btn 
+                    density="compact"
+                    prepend-icon="mdi-bank"
+                    v-if="bankStore.canBank"
+                    :disabled="player.banked"
+                    :aria-label="`${player.name} bank`"
+                    @click="() => handlePlayerBanked(index)"
+                    >Bank</v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+
+            </v-card>
           </v-list-item>
         </v-list>
         </v-col>
