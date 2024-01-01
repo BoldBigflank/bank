@@ -94,7 +94,11 @@ function toggleUseRealDice() {
         </div>
       </v-col>
       <v-col v-if="bankStore.lastHistory">
-        <v-card :text="bankStore.lastHistory"></v-card>
+        <v-card >
+          <v-card-text role="alert">
+            {{ bankStore.lastHistory }}
+          </v-card-text>
+        </v-card>
       </v-col>
     </v-row>
     <v-row>
@@ -121,7 +125,7 @@ function toggleUseRealDice() {
               <v-col>{{ bankStore.currentPlayer.name }} turn</v-col>
               <v-col v-if="bankStore.useRealDice" cols="12">
                 <v-container>
-                  <v-row>
+                 <v-row>
                     <v-col>
                       <v-btn 
                       :disabled="bankStore.isPastRollThree"
@@ -178,6 +182,7 @@ function toggleUseRealDice() {
               <v-col v-if="!bankStore.useRealDice">
                 <v-btn 
                 prepend-icon="mdi-dice-multiple"
+                :aria-label="`${bankStore.currentPlayer.name} Roll`"
                 v-on:click="handleRollClick">Roll</v-btn>
               </v-col>
               <v-col>
@@ -218,6 +223,7 @@ function toggleUseRealDice() {
                 prepend-icon="mdi-bank"
                 v-if="bankStore.canBank"
                 :disabled="player.banked"
+                :aria-label="`${player.name} bank`"
                 @click="() => handlePlayerBanked(index)"
                 >Bank</v-btn>
               </v-col>

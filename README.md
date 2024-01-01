@@ -28,7 +28,7 @@ npm run lint
 
 
 # TODO
- - Implement websockets so many players can be a part of the same game
  - Winner screen
- - Make it blind accessible (label all icons, alert all history)
+ - Keyboard controls
+ - Implement websockets so many players can be a part of the same game
  - Animate rolling dice
