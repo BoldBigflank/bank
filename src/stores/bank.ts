@@ -107,7 +107,7 @@ export const useBankStore = defineStore('bank', {
     },
     addBank(amount: number) {
       this.bank += amount
-      this.history.push(`${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
+      this.history.push(`roll ${this.rollCount+1} ${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
       this.rollCount += 1
     },
     doubleBank() {
