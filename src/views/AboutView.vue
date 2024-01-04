@@ -9,10 +9,10 @@
         <v-col>
           <v-list>
             <v-list-item>
-              Players take turns rolling a die (or clicking Roll) to add value to the bank.
+              Players take turns rolling a die (or clicking Roll) to add value to the bank. 
             </v-list-item>
             <v-list-item>
-              A player may choose to "Bank" at any point, even when it's not their turn.
+              A player may choose to "Bank" at any point, even when it's not their turn. This adds the current value of the bank to their score.
             </v-list-item>
             <v-list-item>
               If a player rolls 7, the round ends. No one else will be allowed to bank, and the bank returns to 0. This rule does not apply to the first 3 rolls of a round. Instead, rolling a 7 during the first 3 rolls adds 70 to the bank.
