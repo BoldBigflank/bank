@@ -93,6 +93,7 @@ export const useBankStore = defineStore('bank', {
     startGame() {
       this.state = 'progress'
       this.round = 0
+      this.history.push(`Round ${this.round + 1}`)
     },
     nextPlayerTurn() {
       if (this.allPlayersBanked) {
@@ -107,26 +108,27 @@ export const useBankStore = defineStore('bank', {
     },
     addBank(amount: number) {
       this.bank += amount
-      this.history.push(`roll ${this.rollCount+1} ${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
+      this.history.push(`roll ${this.rollCount+1}, ${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
       this.rollCount += 1
     },
     doubleBank() {
       this.bank *= 2
-      this.history.push(`${this.currentPlayer.name} doubled the bank to ${this.bank}`)
+      this.history.push(`${this.currentPlayer.name} rolled doubles and the bank is now ${this.bank}`)
       this.rollCount += 1
     },
     playerBanked(name: string) {
       const p = this.players.find((p) => p.name === name)
       if (!p) return
+      if (p.banked) return
       p.banked = true
       p.score += this.bank
-      this.history.push(`${name} banked ${this.bank} for a total of ${p.score}`)
+      this.history.push(`${name} banked ${this.bank} and now has a score of ${p.score}`)
       if (name === this.currentPlayer.name) {
         this.nextPlayerTurn()
       }
     },
     rolledSeven() {
-      this.history.push(`${this.currentPlayer.name} rolled a 7 at bank amount ${this.bank}`)
+      this.history.push(`${this.currentPlayer.name} rolled a 7 and ended round ${this.round + 1} at bank amount ${this.bank}`)
       this.endRound()
     },
     endRound() {
@@ -139,6 +141,7 @@ export const useBankStore = defineStore('bank', {
       this.rollCount = 0
       if (this.round === this.maxRounds) {
         this.state = 'end'
+        this.history.push(`The winner is ${this.winner}`)
       }
     }
   },

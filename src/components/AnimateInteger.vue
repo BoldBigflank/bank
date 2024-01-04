@@ -13,6 +13,10 @@ const props = defineProps({
     type: Number,
     default: 5,
   },
+  ariaLabel: {
+    type: String,
+    default: undefined
+  }
 });
 
 const displayNumber = ref(props.value);

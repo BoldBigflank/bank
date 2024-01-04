@@ -43,16 +43,20 @@ function handleRoll(diceA:number, diceB:number|undefined) {
 
 
 function handleRollClick() {
+  console.log('handleRollClick')
   const diceA = rollDice()
   const diceB = rollDice()
   handleRoll(diceA, diceB)
 }
 
 function handleManualRoll(amount: number) {
+  console.log('handleManualRoll')
   handleRoll(amount, undefined)
 }
 
 function handlePlayerBanked(name: string) {
+  if (!bankStore.canBank) return
+  console.log('handlePlayerBanked')
   bankStore.playerBanked(name)
 }
 
@@ -96,20 +100,133 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
         </v-col>
       </v-row>
       <v-row v-if="bankStore.state === 'progress'">
-        <v-col cols="12">
+        <v-col cols="4" align-self="center">
+          <v-container>
+            <v-row>
+              <v-col>
+                Round {{ bankStore.round + 1 }}
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                Roll {{ bankStore.rollCount + 1 }}
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                {{ bankStore.currentPlayer.name }} turn
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-col>
+        <v-col cols="4" align-self="center">
           <div class="bankInfo">
             <img src="@/assets/bank-circle.svg" class="bankInfoIcon" />
             <div class="bankInfoAmount">
+              <span :aria-label="`bank ${bankStore.bank}`" />
               <AnimateInteger :value=bankStore.bank :speed=5 />
             </div>
           </div>
         </v-col>
-        <v-col>
+        <v-col cols="4" align-self="center" class="rollContainer">
+          <v-container v-if="!bankStore.useRealDice">
+            <v-row>
+              <v-col>
+                <v-btn 
+                  prepend-icon="mdi-dice-multiple"
+                  :aria-label="`${bankStore.currentPlayer.name} Roll`"
+                  v-on:click="handleRollClick">Roll</v-btn>
+
+              </v-col>
+            </v-row>
+            <v-row class="rollContainer">
+              <v-col class="rollContainer">
+                <v-icon 
+                v-for="(number, index) in bankStore.roll"
+                v-bind:key="index"
+                :icon="`mdi-dice-${number}`"
+                size="x-large"
+                >
+                </v-icon>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-col>
+        <v-col cols="12">
           <v-card>
-            <v-card-text role="alert">
+            <v-card-text aria-live="polite" role="alert">
               {{ bankStore.lastHistory }}
             </v-card-text>
           </v-card>
+        </v-col>
+        <v-col v-if="bankStore.useRealDice" cols="12">
+          <v-container>
+              <v-row>
+                <v-col cols="12">
+                  <v-container>
+                   <v-row>
+                    <v-spacer></v-spacer>
+                      <v-col>
+                        <v-btn 
+                        :disabled="bankStore.isPastRollThree"
+                        aria-label="real dice roll 2"
+                        @click="() => handleManualRoll(2)">2</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 3" @click="() => handleManualRoll(3)">3</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 4" @click="() => handleManualRoll(4)">4</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 5" @click="() => handleManualRoll(5)">5</v-btn>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                    </v-row>
+                    <v-row>
+                      <v-spacer></v-spacer>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 6" @click="() => handleManualRoll(6)">6</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn 
+                        :color="bankStore.isPastRollThree ? 'red' : 'primary'" 
+                        aria-label="real dice roll 7" @click="() => handleManualRoll(7)"
+                        >7</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 8" @click="() => handleManualRoll(8)">8</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 9" @click="() => handleManualRoll(9)">9</v-btn>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      </v-row>
+                    <v-row>
+                      <v-spacer></v-spacer>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 10" @click="() => handleManualRoll(10)">10</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn aria-label="real dice roll 11" @click="() => handleManualRoll(11)">11</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn 
+                        :disabled="bankStore.isPastRollThree"
+                        aria-label="real dice roll 12" @click="() => handleManualRoll(12)">12</v-btn>
+                      </v-col>
+                      <v-col>
+                        <v-btn 
+                        color="yellow" 
+                        :disabled="!bankStore.isPastRollThree"
+                        aria-label="real dice roll doubles" @click="() => handleManualRoll(-1)">Doubles</v-btn>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                    </v-row>
+                  </v-container>
+                </v-col>
+              </v-row>
+            </v-container>
         </v-col>
       </v-row>
       <v-row>
@@ -130,135 +247,45 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
               </v-container>
             </v-form>
           </v-col>
-          <v-col cols="12" v-else-if="bankStore.state === 'progress'">
-            <v-container>
-              <v-row>
-                <v-col>{{ bankStore.currentPlayer.name }} turn</v-col>
-                <v-col v-if="bankStore.useRealDice" cols="12">
-                  <v-container>
-                   <v-row>
-                    <v-spacer></v-spacer>
-                      <v-col>
-                        <v-btn 
-                        :disabled="bankStore.isPastRollThree"
-                        @click="() => handleManualRoll(2)">2</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(3)">3</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(4)">4</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(5)">5</v-btn>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                    </v-row>
-                    <v-row>
-                      <v-spacer></v-spacer>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(6)">6</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn 
-                        :color="bankStore.isPastRollThree ? 'red' : 'primary'" 
-                        @click="() => handleManualRoll(7)"
-                        >7</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(8)">8</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(9)">9</v-btn>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                      </v-row>
-                    <v-row>
-                      <v-spacer></v-spacer>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(10)">10</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn @click="() => handleManualRoll(11)">11</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn 
-                        :disabled="bankStore.isPastRollThree"
-                        @click="() => handleManualRoll(12)">12</v-btn>
-                      </v-col>
-                      <v-col>
-                        <v-btn 
-                        color="yellow" 
-                        :disabled="!bankStore.isPastRollThree"
-                        @click="() => handleManualRoll(-1)">Doubles</v-btn>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                    </v-row>
-                  </v-container>
-                </v-col>
-                <v-col v-if="!bankStore.useRealDice" cols="auto">
-                  <v-btn 
-                  prepend-icon="mdi-dice-multiple"
-                  :aria-label="`${bankStore.currentPlayer.name} Roll`"
-                  v-on:click="handleRollClick">Roll</v-btn>
-                </v-col>
-                <v-col cols="auto">
-                  <v-icon 
-                  v-for="number in bankStore.roll"
-                  v-bind:key="number"
-                  :icon="`mdi-dice-${number}`"
-                  size="x-large"
-                  >
-                  </v-icon>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-col>
           <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end">
             <v-icon icon="mdi-trophy" size="x-large" /><br />
             WINNER <br />
             {{ bankStore.winner }}
           </v-col>
-          <v-col cols="12" v-else>ELSE {{ bankStore.state }}</v-col>
       </v-row>
-      <v-row>
-        <v-col>
-          <v-list>
-            <v-list-item v-if="bankStore.state === 'progress'">
-              Round {{ bankStore.round + 1 }}/{{ bankStore.maxRounds }} (Roll {{ bankStore.rollCount + 1 }})
-            </v-list-item>
-            <v-list-subheader>Players</v-list-subheader>
-            <v-list-item 
-            v-for="(player, index) in displayPlayers" 
-            :key="player.name">
-            <v-card :color="playerColor[index]">
-              <v-container>
-                <v-row>
-                  <v-col>
-                    {{ player.name }}
-                  </v-col>
-                  <v-col cols="auto">
-                    <AnimateInteger :value="player.score" :speed=10 />
-                  </v-col>
-                  <v-col cols="auto">
+      <v-row
+      v-for="(player, index) in displayPlayers" 
+      :disabled="player.banked"
+      :aria-label="`${player.name} score ${player.score}`"
+      :key="player.name"
+      >
+      <v-col
+        cols="12"
+        >
+          <v-sheet
+            rounded
+            :color="playerColor[index]"
+          >
+            <v-container>
+              <v-row>
+                <v-col aria-hidden="true">{{ player.name }}</v-col>
+                <v-col aria-hidden="true">{{ player.score }}</v-col>
+                  <v-col aria-label="">
                     <v-btn 
-                    density="compact"
-                    prepend-icon="mdi-bank"
-                    v-if="bankStore.canBank"
-                    :disabled="player.banked"
-                    :aria-label="`${player.name} bank`"
-                    @click="() => handlePlayerBanked(player.name)"
-                    >Bank</v-btn>
+                      density="compact"
+                      prepend-icon="mdi-bank"
+                      v-if="bankStore.canBank"
+                      :disabled="player.banked"
+                      :aria-label="`${player.name} bank`"
+                      @click="() => handlePlayerBanked(player.name)"
+                      >Bank</v-btn>
                   </v-col>
-                </v-row>
-              </v-container>
+              </v-row>
+            </v-container>
+          </v-sheet>
 
-            </v-card>
-          </v-list-item>
-        </v-list>
         </v-col>
       </v-row>
-  
     </v-container>
   </div>
 </template>
@@ -289,6 +316,9 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
   left: 50%;
   transform: translate(-50%, -50%);
   width: 100%;
+}
+.rollContainer {
+  text-align: right;
 }
 .game {
   max-width: 600px;

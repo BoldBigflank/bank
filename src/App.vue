@@ -5,14 +5,15 @@ import { RouterLink, RouterView } from 'vue-router';
 <template>
   <header>
     <div class="wrapper">
-      <nav>
+      <nav role="navigation">
         <RouterLink to="/">Game</RouterLink>
         <RouterLink to="/about">About</RouterLink>
       </nav>
     </div>
   </header>
-
-  <RouterView />
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <style scoped>
