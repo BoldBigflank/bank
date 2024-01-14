@@ -133,7 +133,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
         </v-col>
         <v-col cols="12">
           <v-card>
-            <v-card-text aria-live="polite" aria-relevant="additions" role="alert">
+            <v-card-text aria-live="polite" role="alert">
               {{ bankStore.lastHistory }}
             </v-card-text>
           </v-card>
@@ -226,7 +226,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
               </v-container>
             </v-form>
           </v-col>
-          <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end" aria-live="polite" aria-relevant="additions" role="alert">
+          <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end" aria-live="polite" role="alert">
             <v-icon icon="mdi-trophy" size="x-large" /><br />
             THE WINNER IS <br />
             {{ bankStore.winner }}
