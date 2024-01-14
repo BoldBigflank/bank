@@ -1,3 +1,4 @@
+import { arraySum } from '@/utils'
 import { defineStore } from 'pinia'
 
 type Player = {
@@ -97,7 +98,7 @@ export const useBankStore = defineStore('bank', {
     },
     nextPlayerTurn() {
       if (this.allPlayersBanked) {
-        this.history.push(`all players banked`)
+        this.history.push(`all players banked and ended round ${this.round + 1}`)
         this.endRound()
         return
       }
@@ -106,15 +107,35 @@ export const useBankStore = defineStore('bank', {
         this.turn = (this.turn + 1) % this.players.length
       }
     },
-    addBank(amount: number) {
-      this.bank += amount
-      this.history.push(`roll ${this.rollCount+1}, ${this.currentPlayer.name} added ${amount} to the bank for a total of ${this.bank}`)
-      this.rollCount += 1
-    },
-    doubleBank() {
-      this.bank *= 2
-      this.history.push(`${this.currentPlayer.name} rolled doubles and the bank is now ${this.bank}`)
-      this.rollCount += 1
+    playerRolled(dice: number[]) {
+      this.roll = dice
+      const total = dice.reduce((a, c) => a + c, 0)
+      const isDoubles = dice.length > 1 ? dice[0] === dice[1] : dice[0] === -1
+      if (this.rollCount > 2) {
+        if (total === 7) {
+          this.history.push(`${this.currentPlayer.name} rolled a 7 and ended round ${this.round + 1} at bank amount ${this.bank}`)
+          this.endRound()
+        } else if (isDoubles)  {
+          this.bank *= 2
+          this.history.push(`${this.currentPlayer.name} rolled doubles and the bank is now ${this.bank}`)
+          this.rollCount += 1
+        } else {
+          this.bank += total
+          this.history.push(`roll ${this.rollCount+1}, ${this.currentPlayer.name} added ${total} to the bank for a total of ${this.bank}`)
+          this.rollCount += 1
+        }
+      } else {
+        if (total === 7) {
+          this.bank += total
+          this.history.push(`roll ${this.rollCount+1}, ${this.currentPlayer.name} rolled 7 and added ${total} to the bank for a total of ${this.bank}`)
+          this.rollCount += 1
+        } else {
+          this.bank += total
+          this.history.push(`roll ${this.rollCount+1}, ${this.currentPlayer.name} added ${total} to the bank for a total of ${this.bank}`)
+          this.rollCount += 1
+        }
+      }
+      this.nextPlayerTurn()
     },
     playerBanked(name: string) {
       const p = this.players.find((p) => p.name === name)
@@ -127,10 +148,6 @@ export const useBankStore = defineStore('bank', {
         this.nextPlayerTurn()
       }
     },
-    rolledSeven() {
-      this.history.push(`${this.currentPlayer.name} rolled a 7 and ended round ${this.round + 1} at bank amount ${this.bank}`)
-      this.endRound()
-    },
     endRound() {
       this.players = this.players.map((p) => ({
         ...p,
@@ -141,7 +158,6 @@ export const useBankStore = defineStore('bank', {
       this.rollCount = 0
       if (this.round === this.maxRounds) {
         this.state = 'end'
-        this.history.push(`The winner is ${this.winner}`)
       }
     }
   },

@@ -19,39 +19,18 @@ function handleNewGame() {
   bankStore.newGame()
 }
 
-function handleRoll(diceA:number, diceB:number|undefined) {
-  bankStore.roll = diceB ? [diceA, diceB] : []
-  const total = diceB ? diceA + diceB : diceA
-  const doubles = diceB ? diceA === diceB : diceA === -1
-  if (bankStore.rollCount > 2) {
-    if (total === 7) {
-      bankStore.rolledSeven()
-    } else if (doubles)  {
-      bankStore.doubleBank()
-    } else {
-      bankStore.addBank(total)
-    }
-  } else {
-    if (total === 7) {
-      bankStore.addBank(70)
-    } else {
-      bankStore.addBank(total)
-    }
-  }
-  bankStore.nextPlayerTurn()
-}
-
-
 function handleRollClick() {
   console.log('handleRollClick')
   const diceA = rollDice()
   const diceB = rollDice()
-  handleRoll(diceA, diceB)
+  // handleRoll(diceA, diceB)
+  bankStore.playerRolled([diceA, diceB])
 }
 
 function handleManualRoll(amount: number) {
   console.log('handleManualRoll')
-  handleRoll(amount, undefined)
+  // handleRoll(amount, undefined)
+  bankStore.playerRolled([amount])
 }
 
 function handlePlayerBanked(name: string) {
@@ -114,7 +93,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             </v-row>
             <v-row>
               <v-col>
-                {{ bankStore.currentPlayer.name }} turn
+                {{ bankStore.currentPlayer.name }}'s turn
               </v-col>
             </v-row>
           </v-container>
@@ -154,7 +133,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
         </v-col>
         <v-col cols="12">
           <v-card>
-            <v-card-text aria-live="polite" role="alert">
+            <v-card-text aria-live="polite" aria-relevant="additions" role="alert">
               {{ bankStore.lastHistory }}
             </v-card-text>
           </v-card>
@@ -247,9 +226,9 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
               </v-container>
             </v-form>
           </v-col>
-          <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end">
+          <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end" aria-live="polite" aria-relevant="additions" role="alert">
             <v-icon icon="mdi-trophy" size="x-large" /><br />
-            WINNER <br />
+            THE WINNER IS <br />
             {{ bankStore.winner }}
           </v-col>
       </v-row>
