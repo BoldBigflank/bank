@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about text-primary">
     <h1>Developed by Alex Swan</h1>
     <p>
       View the source on <a href="https://github.com/BoldBigflank/bank/" target="_blank">GitHub</a>

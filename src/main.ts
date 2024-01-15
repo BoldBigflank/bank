@@ -26,7 +26,20 @@ const vuetify = createVuetify({
   },
   blueprint: md3,
   theme: {
-    defaultTheme: 'dark'
+    defaultTheme: 'dark',
+    themes: {
+      dark: {
+        colors: {
+          primary: '#0c0c0c',
+          secondary: '#424242',
+          accent: '#5E9AD0',
+          error: '#FF5252',
+          info: '#2196F3',
+          success: '#4CAF50',
+          warning: '#FFC107',
+        }
+      }
+    }
   },
   components,
   directives

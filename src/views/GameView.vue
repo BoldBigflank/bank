@@ -47,18 +47,18 @@ function toggleUseRealDice() {
 const playerColor = computed(() => {
   return bankStore.players.map((p) => {
     if (bankStore.state === 'end') return ''
-    else if (p.banked) return 'primary'
-    else if (p.name === bankStore.currentPlayer.name) return 'yellow'
-    else return ''
+    else if (p.banked) return 'success'
+    else if (p.name === bankStore.currentPlayer.name) return 'accent'
+    else return 'primary'
   })
 })
 const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.rankedPlayers : bankStore.players)
 </script>
 
 <template>
-  <div class="game">
+  <div class="game font-weight-bold">
     <v-container>
-      <v-row>
+      <v-row dense>
         <v-col align-self="center" cols="6">
           <v-btn 
             v-if="bankStore.state !== 'setup'"
@@ -66,6 +66,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             >{{bankStore.state === 'end' ? 'Play Again' : 'New Game'}}</v-btn>
           <v-btn 
             v-if="bankStore.state === 'setup'"
+            color="primary"
             :disabled="bankStore.players.length === 0"
             v-on:click="handleStartGame">Start Game</v-btn>
         </v-col>
@@ -73,26 +74,27 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
           <v-switch 
           inset
           color="primary"
+          class="text-primary"
           v-model="bankStore.useRealDice"
           v-on:click="toggleUseRealDice"
           label="Use real dice"></v-switch>
         </v-col>
       </v-row>
-      <v-row v-if="bankStore.state === 'progress'">
+      <v-row dense v-if="bankStore.state === 'progress'">
         <v-col cols="4" align-self="center">
           <v-container>
             <v-row>
-              <v-col>
+              <v-col class="text-primary">
                 Round {{ bankStore.round + 1 }}
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col class="text-primary">
                 Roll {{ bankStore.rollCount + 1 }}
               </v-col>
             </v-row>
             <v-row>
-              <v-col>
+              <v-col class="text-primary">
                 {{ bankStore.currentPlayer.name }}'s turn
               </v-col>
             </v-row>
@@ -122,6 +124,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
               <v-col class="rollContainer">
                 <v-icon 
                 v-for="(number, index) in bankStore.roll"
+                class="text-white"
                 v-bind:key="index"
                 :icon="`mdi-dice-${number}`"
                 size="x-large"
@@ -132,7 +135,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
           </v-container>
         </v-col>
         <v-col cols="12">
-          <v-card>
+          <v-card color="info">
             <v-card-text aria-live="polite" role="alert">
               {{ bankStore.lastHistory }}
             </v-card-text>
@@ -196,7 +199,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
                       </v-col>
                       <v-col>
                         <v-btn 
-                        color="yellow" 
+                        color="secondary" 
                         :disabled="!bankStore.isPastRollThree"
                         aria-label="real dice roll doubles" @click="() => handleManualRoll(-1)">Doubles</v-btn>
                       </v-col>
@@ -208,13 +211,13 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             </v-container>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row dense>
           <v-col cols="12" v-if="bankStore.state === 'setup'">
             <v-form v-on:submit="handleAddPlayer" @submit.prevent>
               <v-container>
                 <v-row>
                   <v-col>
-                    <v-text-field v-model="name" label="Name"></v-text-field>
+                    <v-text-field class="text-primary" v-model="name" label="Name"></v-text-field>
                   </v-col>
                   <v-col cols="auto">
                     <v-btn 
@@ -237,6 +240,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
       :disabled="player.banked"
       :aria-label="`${player.name} score ${player.score}`"
       :key="player.name"
+      no-gutters
       >
       <v-col
         cols="12"
@@ -247,11 +251,12 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
           >
             <v-container>
               <v-row>
-                <v-col aria-hidden="true">{{ player.name }}</v-col>
+                <v-col class="font-weight-medium" aria-hidden="true">{{ player.name }}</v-col>
                 <v-col aria-hidden="true">{{ player.score }}</v-col>
                   <v-col aria-label="">
                     <v-btn 
                       density="compact"
+                      color="secondary"
                       prepend-icon="mdi-bank"
                       v-if="bankStore.canBank"
                       :disabled="player.banked"
@@ -277,7 +282,8 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
   margin: 15px;
 }
 .bankInfoIcon {
-  background-color: #333333;
+  background-color: #808080;
+  color: yellow;
   position:absolute;
   top: 0%;
   left: 50%;
