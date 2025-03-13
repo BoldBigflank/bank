@@ -106,6 +106,16 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
                 :disabled="bankStore.players.length === 0"
                 v-on:click="handleStartGame">Start Game</v-btn>
             </v-col>
+            <v-col align="right" cols="6">
+              <v-btn 
+                v-if="bankStore.state === 'setup'"
+                color="primary"
+                prepend-icon="mdi-menu-open"
+                @click.stop="drawer = !drawer"
+                aria-label="Menu"
+                size="default"
+                v-on:click="">Menu</v-btn>
+            </v-col>
           </v-row>
           <v-row dense v-if="bankStore.state === 'progress'">
             <v-col cols="4" align-self="center">
