@@ -92,7 +92,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
           @click="toggleUseRealDice"
           ></v-list-item>
           <v-divider></v-divider>  
-          <v-list-item prepend-icon="mdi-forum" title="About" value="about" @click="$router.push('/about')"></v-list-item>
+          <v-list-item prepend-icon="mdi-information" title="About" value="about" @click="$router.push('/about')"></v-list-item>
           
         </v-list>
       </v-navigation-drawer>
@@ -110,11 +110,11 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
               <v-btn 
                 v-if="bankStore.state === 'setup'"
                 color="primary"
-                prepend-icon="mdi-menu-open"
+                prepend-icon="mdi-information"
                 @click.stop="drawer = !drawer"
                 aria-label="Menu"
                 size="default"
-                v-on:click="">Menu</v-btn>
+                @click="$router.push('/about')">About</v-btn>
             </v-col>
           </v-row>
           <v-row dense v-if="bankStore.state === 'progress'">
