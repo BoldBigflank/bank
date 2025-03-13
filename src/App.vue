@@ -4,12 +4,12 @@ import { RouterLink, RouterView } from 'vue-router';
 
 <template>
   <header>
-    <div class="wrapper">
+    <!-- <div class="wrapper">
       <nav role="navigation">
         <RouterLink class="text-primary" to="/">Game</RouterLink>
         <RouterLink class="text-primary" to="/about">About</RouterLink>
       </nav>
-    </div>
+    </div> -->
   </header>
   <main>
     <RouterView />
@@ -20,6 +20,11 @@ import { RouterLink, RouterView } from 'vue-router';
 header {
   line-height: 1.5;
   max-height: 100vh;
+}
+
+main {
+  min-height: 100vh;
+  position: relative;
 }
 
 .logo {
