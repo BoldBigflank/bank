@@ -111,8 +111,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
                 v-if="bankStore.state === 'setup'"
                 color="primary"
                 prepend-icon="mdi-information"
-                @click.stop="drawer = !drawer"
-                aria-label="Menu"
+                aria-label="About"
                 size="default"
                 @click="$router.push('/about')">About</v-btn>
             </v-col>
