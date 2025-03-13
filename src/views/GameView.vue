@@ -177,7 +177,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             </v-col>
             <v-col cols="12">
               <v-card color="info">
-                <v-card-text aria-live="polite" role="alert">
+                <v-card-text aria-live="polite" role="alert" aria-atomic="false" aria-relevant="additions">
                   {{ bankStore.lastHistory }}
                 </v-card-text>
               </v-card>
