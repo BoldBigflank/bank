@@ -24,6 +24,7 @@
         </v-col>
       </v-row>
     </v-container>
+    <v-btn @click="$router.push('/game')">Back to Game</v-btn>
   </div>
 </template>
 

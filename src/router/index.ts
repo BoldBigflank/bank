@@ -6,8 +6,14 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            name: "game",
-            component: GameView,
+            redirect: { path: "/game" },
+            children: [
+                {
+                    path: "/game",
+                    name: "game",
+                    component: GameView,
+                },
+            ],
         },
         {
             path: "/about",
