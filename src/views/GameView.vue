@@ -98,6 +98,9 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
       </v-navigation-drawer>
       <div class="game font-weight-bold">
         <v-container>
+          <div aria-live="assertive" class="visually-hidden" role="alert">
+            <div id="start-{{bankStore.history.length}}">{{ bankStore.lastHistory }}</div>
+          </div>
           <v-row dense>
             <v-col align-self="center" cols="6">
               <v-btn 
@@ -120,8 +123,8 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             <v-col cols="4" align-self="center">
               <v-container>
                 <v-row>
-                  <v-col class="text-primary">
-                    Round {{ bankStore.round + 1 }}
+                  <v-col :aria-label="`Round ${bankStore.round + 1} of ${bankStore.maxRounds}`" class="text-primary">
+                    Round {{ bankStore.round + 1 }}/{{ bankStore.maxRounds }}
                   </v-col>
                 </v-row>
                 <v-row>
@@ -186,8 +189,8 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
             </v-col>
             <v-col cols="12">
               <v-card color="info">
-                <v-card-text aria-live="polite" role="alert" aria-atomic="false" aria-relevant="additions">
-                  {{ bankStore.lastHistory }}
+                <v-card-text>
+                  <div id="history-{{bankStore.history.length}}">{{ bankStore.lastHistory }}</div>
                 </v-card-text>
               </v-card>
             </v-col>
@@ -279,7 +282,7 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
                   </v-container>
                 </v-form>
               </v-col>
-              <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end" aria-live="polite" role="alert">
+              <v-col cols="12" v-else-if="bankStore.state === 'end'" class="end" aria-live="assertive" role="alert">
                 <v-icon icon="mdi-trophy" size="x-large" /><br />
                 THE WINNER IS <br />
                 {{ bankStore.winner }}<br />
@@ -399,5 +402,15 @@ const displayPlayers = computed(() => (bankStore.state === 'end') ? bankStore.ra
   will-change: transform;
   backface-visibility: hidden;
   border-radius: 4px 0 0 4px;
+}
+
+.visually-hidden:not(:focus):not(:active) {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 </style>
